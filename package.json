@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-custom-bullets",
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"description": "This plugin helps you customize bullet lists",
 	"main": "main.js",
 	"scripts": {
@@ -10,7 +10,7 @@
 	},
 	"keywords": [],
 	"author": "czarmin",
-	"license": "MIT",
+	"license": "GNU",
 	"devDependencies": {
 		"@types/node": "^16.11.6",
 		"@typescript-eslint/eslint-plugin": "5.29.0",

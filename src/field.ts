@@ -11,7 +11,7 @@ import {
   EditorView,
 } from "@codemirror/view";
 import { Bullet } from "./bullet";
-import MyPlugin from "./main";
+import CustomBullets from "./main";
 
 export const bulletListField = StateField.define<DecorationSet>({
   create(state): DecorationSet {
@@ -32,7 +32,7 @@ export const bulletListField = StateField.define<DecorationSet>({
                   listCharFrom,
                   listCharFrom + 1,
                   Decoration.replace({
-                    widget: new Bullet(MyPlugin.settings.dash),
+                    widget: new Bullet(CustomBullets.settings.dash),
                   })
                 );
                 break;
@@ -41,7 +41,7 @@ export const bulletListField = StateField.define<DecorationSet>({
                   listCharFrom,
                   listCharFrom + 1,
                   Decoration.replace({
-                    widget: new Bullet(MyPlugin.settings.star),
+                    widget: new Bullet(CustomBullets.settings.star),
                   })
                 );
                 break;
@@ -50,7 +50,7 @@ export const bulletListField = StateField.define<DecorationSet>({
                   listCharFrom,
                   listCharFrom + 1,
                   Decoration.replace({
-                    widget: new Bullet(MyPlugin.settings.plus),
+                    widget: new Bullet(CustomBullets.settings.plus),
                   })
                 );
                 break;

@@ -1,8 +1,10 @@
 import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
+import { Extension } from '@codemirror/state';
+
 import { bulletListField } from './field';
 
-interface MyPluginSettings {
+interface CustomBulletsSettings {
 	dash: string;
 	star: string;
 	plus: string;
@@ -10,7 +12,7 @@ interface MyPluginSettings {
 	color: string;
 }
 
-const DEFAULT_SETTINGS: MyPluginSettings = {
+const DEFAULT_SETTINGS: CustomBulletsSettings = {
 	dash: '•',
 	star: '•',
 	plus: '•',
@@ -18,22 +20,39 @@ const DEFAULT_SETTINGS: MyPluginSettings = {
 	color: '#ffffff',
 }
 
-export default class MyPlugin extends Plugin {
-	static settings: MyPluginSettings;
+export default class CustomBullets extends Plugin {
+	static settings: CustomBulletsSettings;
+
+	private editorExtension: Extension[] = [];
 
 	async onload() {
 		await this.loadSettings();
 		
+		this.updateEditorExtension();
+
 		// This adds a settings tab so the user can configure various aspects of the plugin
 		this.addSettingTab(new BulletSettingTab(this.app, this));
-		this.registerEditorExtension([bulletListField]);
-		if(MyPlugin.settings.doColor) {
+		this.registerEditorExtension(this.editorExtension);
+	}
+
+	updateEditorExtension() {
+		// Empty the array while keeping the same reference
+		// (Don't create a new array here)
+		this.editorExtension.length = 0;
+	
+		// Create new editor extension
+		const bulletListExt = bulletListField;
+		// Add it to the array
+		this.editorExtension.push(bulletListExt);
+	
+		const color = CustomBullets.settings.color.length == 7 ? CustomBullets.settings.color : "#ffffff";
+		if(CustomBullets.settings.doColor) {
 			if(document.querySelectorAll(".custom-style-bullet").length == 0) {
 				const style = document.createElement('style');
 				style.className = "custom-style-bullet";
 				style.innerHTML = `
 				div > img + span {
-					color: ${MyPlugin.settings.color};
+					color: ${color};
 				}
 				`;
 				document.querySelector('head')?.appendChild(style);
@@ -41,7 +60,7 @@ export default class MyPlugin extends Plugin {
 				const style = document.querySelectorAll(".custom-style-bullet")[0];
 				style.innerHTML = `
 				div > img + span {
-					color: ${MyPlugin.settings.color};
+					color: ${color};
 				}
 				`;
 			}
@@ -51,49 +70,32 @@ export default class MyPlugin extends Plugin {
 				style.innerHTML = ``;
 			}
 		}
+
+		// Flush the changes to all editors
+		this.app.workspace.updateOptions();
 	}
 
 	onunload() {
-
+		if(document.querySelectorAll(".custom-style-bullet").length > 0) {
+			const style = document.querySelectorAll(".custom-style-bullet")[0];
+			style.remove();
+		}
 	}
 
 	async loadSettings() {
-		MyPlugin.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
+		CustomBullets.settings = Object.assign({}, DEFAULT_SETTINGS, await this.loadData());
 	}
 
 	async saveSettings() {
-		await this.saveData(MyPlugin.settings);
-		if(MyPlugin.settings.doColor)
-			if(document.querySelectorAll(".custom-style-bullet").length == 0) {
-				const style=document.createElement('style');
-				style.className = "custom-style-bullet";
-				style.innerHTML = `
-				div > img + span {
-					color: ${MyPlugin.settings.color};
-				}
-				`;
-				document.querySelector('head')?.appendChild(style);
-			} else {
-				const style = document.querySelectorAll(".custom-style-bullet")[0];
-				style.innerHTML = `
-				div > img + span {
-					color: ${MyPlugin.settings.color};
-				}
-				`;
-			}
-		else
-			if(document.querySelectorAll(".custom-style-bullet").length > 0) {
-				const style = document.querySelectorAll(".custom-style-bullet")[0];
-				style.innerHTML = ``;
-			}
-		console.log("asd");
+		await this.saveData(CustomBullets.settings);
+		this.updateEditorExtension();
 	}
 }
 
 class BulletSettingTab extends PluginSettingTab {
-	plugin: MyPlugin;
+	plugin: CustomBullets;
 
-	constructor(app: App, plugin: MyPlugin) {
+	constructor(app: App, plugin: CustomBullets) {
 		super(app, plugin);
 		this.plugin = plugin;
 	}
@@ -110,11 +112,11 @@ class BulletSettingTab extends PluginSettingTab {
 			.setDesc('Display character for dash bullet')
 			.addText(text => text
 				.setPlaceholder('Enter character')
-				.setValue(MyPlugin.settings.dash)
+				.setValue(CustomBullets.settings.dash)
 				.onChange(async (value) => {
 					if(value == "")
 						value = DEFAULT_SETTINGS.dash;
-					MyPlugin.settings.dash = value;
+					CustomBullets.settings.dash = value;
 					await this.plugin.saveSettings();
 				}));
 
@@ -123,11 +125,11 @@ class BulletSettingTab extends PluginSettingTab {
 		.setDesc('Display character for star bullet')
 		.addText(text => text
 			.setPlaceholder('Enter character')
-			.setValue(MyPlugin.settings.star)
+			.setValue(CustomBullets.settings.star)
 			.onChange(async (value) => {
 				if(value == "")
 					value = DEFAULT_SETTINGS.star;
-				MyPlugin.settings.star = value;
+				CustomBullets.settings.star = value;
 				await this.plugin.saveSettings();
 			}));
 
@@ -136,11 +138,11 @@ class BulletSettingTab extends PluginSettingTab {
 		.setDesc('Display character for plus bullet')
 		.addText(text => text
 			.setPlaceholder('Enter character')
-			.setValue(MyPlugin.settings.plus)
+			.setValue(CustomBullets.settings.plus)
 			.onChange(async (value) => {
 				if(value == "")
 					value = DEFAULT_SETTINGS.plus;
-				MyPlugin.settings.plus = value;
+				CustomBullets.settings.plus = value;
 				await this.plugin.saveSettings();
 			}));
 		
@@ -148,9 +150,9 @@ class BulletSettingTab extends PluginSettingTab {
 		.setName('Custom Color')
 		.setDesc('Enable custom coloring')
 		.addToggle(but => but
-			.setValue(MyPlugin.settings.doColor)
+			.setValue(CustomBullets.settings.doColor)
 			.onChange(async (value) => {
-				MyPlugin.settings.doColor = value;
+				CustomBullets.settings.doColor = value;
 				await this.plugin.saveSettings();
 			}));
 			
@@ -158,9 +160,9 @@ class BulletSettingTab extends PluginSettingTab {
 		.setName('Color')
 		.setDesc('Custom color of bullets')
 		.addColorPicker(col => col
-			.setValue(MyPlugin.settings.color)
+			.setValue(CustomBullets.settings.color)
 			.onChange(async (value) => {
-				MyPlugin.settings.color = value;
+				CustomBullets.settings.color = value;
 				await this.plugin.saveSettings();
 			}));
 	}

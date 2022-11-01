@@ -1,4 +1,4 @@
-import { App, MarkdownView, Plugin, PluginSettingTab, Setting, View } from 'obsidian';
+import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
 import { bulletListField } from './field';
 
@@ -29,7 +29,7 @@ export default class MyPlugin extends Plugin {
 		this.registerEditorExtension([bulletListField]);
 		if(MyPlugin.settings.doColor) {
 			if(document.querySelectorAll(".custom-style-bullet").length == 0) {
-				let style=document.createElement('style');
+				const style = document.createElement('style');
 				style.className = "custom-style-bullet";
 				style.innerHTML = `
 				div > img + span {
@@ -38,7 +38,7 @@ export default class MyPlugin extends Plugin {
 				`;
 				document.querySelector('head')?.appendChild(style);
 			} else {
-				let style = document.querySelectorAll(".custom-style-bullet")[0];
+				const style = document.querySelectorAll(".custom-style-bullet")[0];
 				style.innerHTML = `
 				div > img + span {
 					color: ${MyPlugin.settings.color};
@@ -47,7 +47,7 @@ export default class MyPlugin extends Plugin {
 			}
 		} else {
 			if(document.querySelectorAll(".custom-style-bullet").length > 0) {
-				let style = document.querySelectorAll(".custom-style-bullet")[0];
+				const style = document.querySelectorAll(".custom-style-bullet")[0];
 				style.innerHTML = ``;
 			}
 		}
@@ -65,7 +65,7 @@ export default class MyPlugin extends Plugin {
 		await this.saveData(MyPlugin.settings);
 		if(MyPlugin.settings.doColor)
 			if(document.querySelectorAll(".custom-style-bullet").length == 0) {
-				let style=document.createElement('style');
+				const style=document.createElement('style');
 				style.className = "custom-style-bullet";
 				style.innerHTML = `
 				div > img + span {
@@ -74,7 +74,7 @@ export default class MyPlugin extends Plugin {
 				`;
 				document.querySelector('head')?.appendChild(style);
 			} else {
-				let style = document.querySelectorAll(".custom-style-bullet")[0];
+				const style = document.querySelectorAll(".custom-style-bullet")[0];
 				style.innerHTML = `
 				div > img + span {
 					color: ${MyPlugin.settings.color};
@@ -83,7 +83,7 @@ export default class MyPlugin extends Plugin {
 			}
 		else
 			if(document.querySelectorAll(".custom-style-bullet").length > 0) {
-				let style = document.querySelectorAll(".custom-style-bullet")[0];
+				const style = document.querySelectorAll(".custom-style-bullet")[0];
 				style.innerHTML = ``;
 			}
 		console.log("asd");

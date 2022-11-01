@@ -9,7 +9,6 @@ import {
   Decoration,
   DecorationSet,
   EditorView,
-  WidgetType,
 } from "@codemirror/view";
 import { Bullet } from "./bullet";
 import MyPlugin from "./main";

@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-custom-bullets",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "This plugin helps you customize bullet lists",
 	"main": "main.js",
 	"scripts": {

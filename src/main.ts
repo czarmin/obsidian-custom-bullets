@@ -51,7 +51,7 @@ export default class CustomBullets extends Plugin {
 				const style = document.createElement('style');
 				style.className = "custom-style-bullet";
 				style.innerHTML = `
-				div > img + span {
+				.HyperMD-list-line > img + span {
 					color: ${color};
 				}
 				`;
@@ -59,7 +59,7 @@ export default class CustomBullets extends Plugin {
 			} else {
 				const style = document.querySelectorAll(".custom-style-bullet")[0];
 				style.innerHTML = `
-				div > img + span {
+				.HyperMD-list-line > img + span {
 					color: ${color};
 				}
 				`;

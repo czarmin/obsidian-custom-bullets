@@ -2,7 +2,7 @@ import { App, Plugin, PluginSettingTab, Setting } from 'obsidian';
 
 import { Extension } from '@codemirror/state';
 
-import { bulletListField } from './field';
+import { bulletListPlugin } from './view';
 
 interface CustomBulletsSettings {
 	dash: string;
@@ -41,7 +41,7 @@ export default class CustomBullets extends Plugin {
 		this.editorExtension.length = 0;
 	
 		// Create new editor extension
-		const bulletListExt = bulletListField;
+		const bulletListExt = bulletListPlugin;
 		// Add it to the array
 		this.editorExtension.push(bulletListExt);
 	
